@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     avatar:{
         type: String, //Cloudinary URL.
+        required: true
     },
     coverImage:{
         type: String, //Cloudinary URL.
@@ -37,14 +38,14 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Video"
     }],
-    refreshToen: {
+    refreshToken: {
         type: String
     }
 },{timestamps: true});
 
 userSchema.pre("save", async function(next){
     if(this.isModified("password")) return next();
-    this .password = await bcrypt.hash(this.password, 10);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
