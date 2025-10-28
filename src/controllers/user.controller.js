@@ -184,10 +184,117 @@ const refreshAccessToken = asyncHandler( async (req,res) => {
     }
 });
 
+const changePassword = asyncHandler( async (req,res) => {
+    const {newPassword, oldPassword} = req.body;
+
+    const user = await User.findById(req.user?._id);
+
+    const isPasswordValid = user.correctPassword(oldPassword);
+
+    if(!isPasswordValid){
+        throw new ApiError(400, "Invalid old password");
+    }
+
+    user.password = newPassword;
+    await user.save({validateBeforeSave: false});
+
+    return res.status(200).json(new ApiResponse(200,{},"Password changed successfully"));
+});
+
+const getCurrentUser = asyncHandler( async (req,res) => {
+    return res.status(200).json(200,req.user,"Current user fetched successfully");
+});
+
+const updateUserDetails = asyncHandler( async (req,res) => {
+    const {fullName, email} = req.body;
+
+    if(!fullName || !email){
+        throw new ApiError(400, "Fullname or email not found");
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                fullName,
+                email
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password");
+
+    return res.status(200).json(new ApiResponse(200, "User details updated"));
+});
+
+const updateAvatar = asyncHandler( async (req,res) => {
+    const newAvatarPath = req.file?.path;
+
+    if(!newAvatarPath){
+        throw new ApiError(401, "Avatar path not found");
+    }
+
+    const avatar = await uploadOnCloudinary(newAvatarPath);
+
+    if(!avatar.url){
+        throw new ApiError(401, "Avatar URL not found");
+    }
+
+    await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatar: avatar.url
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password");
+
+    return res.status(200).json(new ApiResponse(200, "Avatar Changed Successfully"));
+
+});
+
+const updateCoverImage = asyncHandler( async (req,res) => {
+    const newCoverImagePath = req.file?.path;
+
+    if(!newCoverImagePath){
+        throw new ApiError(401, "Cover Image path not found");
+    }
+
+    const coverImage = await uploadOnCloudinary(newCoverImagePath);
+
+    if(!coverImage.url){
+        throw new ApiError(401, "Cover Image URL not found");
+    }
+
+    await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                coverImage: coverImage.url
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password");
+
+    return res.status(200).json(new ApiResponse(200, "Cover Image changed successfully"));
+
+});
+
 export { 
     registerUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
+    changePassword,
+    getCurrentUser,
+    updateUserDetails,
+    updateAvatar,
+    updateCoverImage,
 };
                                                        
