@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { loginUser, logoutUser, refreshAccessToken, registerUser } from '../controllers/user.controller.js';
+import { changePassword, loginUser, logoutUser, refreshAccessToken, registerUser, updateAvatar, updateCoverImage, updateUserDetails } from '../controllers/user.controller.js';
 import {upload} from '../middlewares/multer.middleware.js';
 import {verifyJWT} from '../middlewares/auth.middleware.js'
+import { useReducer } from 'react';
 
 const userRouter = Router();
 
@@ -19,6 +20,15 @@ userRouter.route('/register').post(
     registerUser);
 
 userRouter.route('/login').post(loginUser);
+
+userRouter.route('/changePassword').patch(verifyJWT, changePassword);
+
+userRouter.route('/updateDetails').patch(verifyJWT, updateUserDetails);
+
+userRouter.route('/changeAvatar').patch(verifyJWT, upload.single("avatar"), updateAvatar);
+
+userRouter.route('/changeCoverImage').patch(verifyJWT, upload.single("overImage"), updateCoverImage);
+
 
 
 // Secure routes.
