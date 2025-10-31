@@ -5,7 +5,7 @@ import {verifyJWT} from '../middlewares/auth.middleware.js';
 
 const userRouter = Router();
 
-userRouter.route('/').get(()=>{
+userRouter.route('/').get((req,res)=>{
     res.send(`<h1>Hello Bhai!</h1>`)
 });
 userRouter.route('/register').post(
