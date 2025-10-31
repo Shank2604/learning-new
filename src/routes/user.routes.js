@@ -6,7 +6,7 @@ import {verifyJWT} from '../middlewares/auth.middleware.js';
 const userRouter = Router();
 
 userRouter.route('/').get(()=>{
-    console.log("Homepage")
+    res.send(`<h1>Hello Bhai!</h1>`)
 });
 userRouter.route('/register').post(
     upload.fields([
