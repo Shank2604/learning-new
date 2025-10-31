@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { changePassword, loginUser, logoutUser, refreshAccessToken, registerUser, updateAvatar, updateCoverImage, updateUserDetails } from '../controllers/user.controller.js';
 import {upload} from '../middlewares/multer.middleware.js';
 import {verifyJWT} from '../middlewares/auth.middleware.js';
-import React from 'react';
 
 const userRouter = Router();
 
