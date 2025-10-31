@@ -6,6 +6,7 @@ import React from 'react';
 
 const userRouter = Router();
 
+userRouter.route('/').get(console.log("Home page"));
 userRouter.route('/register').post(
     upload.fields([
         {
